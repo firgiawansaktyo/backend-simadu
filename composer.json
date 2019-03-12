@@ -16,7 +16,8 @@
         "barryvdh/laravel-dompdf": "^0.8.0",
         "laravelista/lumen-vendor-publish": "^2.1",
         "proshore/entrust-lumen":"1.0.2",
-        "cache/memcached-adapter": "^1.0"
+        "cache/memcached-adapter": "^1.0",
+        "zizaco/entrust": "^1.9"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

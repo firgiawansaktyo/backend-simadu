@@ -98,7 +98,7 @@ class PatroliController extends Controller
         $kegiatanPatroli->tanggal_patroli     = $data['tanggal_patroli'];
         $kegiatanPatroli->kategori_patroli_id = $data['kategori_patroli_id'];
         $kegiatanPatroli->save();
-
+        
         $this->storeKegiatanPatroliRelation($data, $kegiatanPatroli);
               
         return response([
