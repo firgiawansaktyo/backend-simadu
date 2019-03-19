@@ -10,6 +10,7 @@
 
 - Clone repo ini
 - Run `composer install`
+- Change the settings for Role, Users, and Permissions in `vendor/tymon/jwt-auth/src/config/config.php` and `vendor/proshore/entrust-lumen/src/config/config.php` to **App\Models\Role**, **App\Models\Permissions**, and **pengguna_id**
 - Run `php artisan key:generate`
 - Download file `jwt.php` [here](https://github.com/ahmadarif/lumen-jwt/blob/master/config/jwt.php) than place inside config folder
 - Run `php artisan jwt:generate`
