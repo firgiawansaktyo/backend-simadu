@@ -18,4 +18,9 @@ class Daops extends Model
     {
         return $this->belongsTo('App\Models\Provinsi');
     }
+
+    public function anggotaDaops()
+    {
+        return $this->hasMany('App\Models\AnggotaDaops');
+    }
 }

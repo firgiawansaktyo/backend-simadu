@@ -530,9 +530,11 @@ class PatroliController extends Controller
     }
 
     private function storePatroliUdara($data = array(), $kegiatanPatroliId = NULL)
+    // = NULL
     {
         $patroliUdara = new PatroliUdara;
-        $patroliUdara->kegiatan_patroli_id  = $kegiatanPatroliId;
+        $patroliUdara->kegiatan_patroli_id= $kegiatanPatroliId;
+        // ->kegiatan_patroli_id 
         foreach($data as $key => $dataVal) { if (!is_array($dataVal)) $patroliUdara->{$key} = $dataVal; }
         $patroliUdara->save();
     }
