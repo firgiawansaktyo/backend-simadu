@@ -19,4 +19,11 @@ class Anggota extends Model
     {
         return $this->hasMany('App\Models\AnggotaPatroli');
     }
+
+    public function anggotaDaops()
+    {
+        return $this->hasOne('App\Models\AnggotaDaops');
+    }
+
+
 }

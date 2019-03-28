@@ -101,7 +101,6 @@ $api->version('v1', function ($api) {
         // Hotspot sipongi by date range
         $api->get('/hotspot-sipongi/date-range', 'SipongiHotspotController@hotspotByDateRange');
 
-
         // WITH PERMISSION OR WITH AUTH
         // List pengguna
         $api->get('/pengguna/list', [
@@ -377,6 +376,27 @@ $api->version('v1', function ($api) {
         $api->post('/role-navigation-menu/unassign-navigation-menu-role', [
             'uses' => 'RoleNavigationMenuController@unassignNavigationMenuFromRole',
             'middleware' => ['ability:role-navigation-menu-unassign-navigation-menu-role']
+        ]);
+        // List anggota daops
+        $api->get('/anggota-daops/list', [
+            'uses' => 'AnggotaDaopsController@list',
+            'middleware' => ['ability:anggota-daops-list']
+        ]);
+        // Assign anggota daops
+        $api->post('/anggota-daops/assign-anggota-daops', [
+            'uses' => 'AnggotaDaopsController@assignAnggotaDaops',
+            'middleware' => ['ability:asssign-anggota-daops']
+        ]);
+        // Unssign anggota daops
+        $api->post('/anggota-daops/unassign-anggota-daops', [
+            'uses' => 'AnggotaDaopsController@unassignAnggotaDaops',
+            'middleware' => ['ability:unassign-anggota-daops']
+        ]);
+        //List anggota daops based on anggota
+        $api->get('/anggota-daops/anggota-list', [
+            'uses' => 'AnggotaDaopsController@anggotaList'
+            ,
+            'middleware' => ['ability:anggota-daops-anggota-list']
         ]);
     });
     

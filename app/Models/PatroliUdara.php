@@ -8,8 +8,9 @@ class PatroliUdara extends Model
 {
     protected $table = 'patroli_udara';
     protected $hidden = [
+
         'created_at', 
-        'updated_at', 
+        'updated_at',
         'desa_kelurahan_id',
         'cuaca_siang_id',
         'cuaca_pagi_id',
