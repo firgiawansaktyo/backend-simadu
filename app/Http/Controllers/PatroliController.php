@@ -76,7 +76,7 @@ class PatroliController extends Controller
         if (!empty($data['tanggal_patroli']))
             $patrolis->where('tanggal_patroli', $data['tanggal_patroli']);
 
-        $patrolis = $patrolis->orderBy('id', 'DESC')->get();
+        $patrolis = $patrolis->orderBy('id', 'ASC')->get();
 
         return response([
             'data' => $patrolis
@@ -823,34 +823,36 @@ class PatroliController extends Controller
         foreach ($lokasiPatrolis as $lokasiPatroli)
         {
             $patroliDarat = PatroliDarat::where('lokasi_patroli_id', '=', $lokasiPatroli->id)->first();
+            if($patroliDarat != null) {
+                // Delete hasil_uji
+                $hasilUji = HasilUji::where('patroli_darat_id', '=', $patroliDarat->id);
+                $hasilUji->delete();
+                
+                // Delete kondisi_sumber_air
+                $kondisiSumberAir = KondisiSumberAir::where('patroli_darat_id', '=', $patroliDarat->id);
+                $kondisiSumberAir->delete();
 
-            // Delete hasil_uji
-            $hasilUji = HasilUji::where('patroli_darat_id', '=', $patroliDarat->id);
-            $hasilUji->delete();
-            
-            // Delete kondisi_sumber_air
-            $kondisiSumberAir = KondisiSumberAir::where('patroli_darat_id', '=', $patroliDarat->id);
-            $kondisiSumberAir->delete();
+                // Delete kondisi_tanah
+                $kondisiTanah = KondisiTanah::where('patroli_darat_id', '=', $patroliDarat->id);
+                $kondisiTanah->delete();
 
-            // Delete kondisi_tanah
-            $kondisiTanah = KondisiTanah::where('patroli_darat_id', '=', $patroliDarat->id);
-            $kondisiTanah->delete();
+                // Kondisi vegetasi
+                $kondisiVegetasi = KondisiVegetasi::where('patroli_darat_id', '=', $patroliDarat->id);
+                $kondisiVegetasi->delete();
 
-            // Kondisi vegetasi
-            $kondisiVegetasi = KondisiVegetasi::where('patroli_darat_id', '=', $patroliDarat->id);
-            $kondisiVegetasi->delete();
+                // Delete pemadaman
+                $pemadaman = Pemadaman::where('patroli_darat_id', '=', $patroliDarat->id);
+                $pemadaman->delete();
 
-            // Delete pemadaman
-            $pemadaman = Pemadaman::where('patroli_darat_id', '=', $patroliDarat->id);
-            $pemadaman->delete();
-
-            // Last delete patroli_darat
-            $patroliDarat->delete();
+                // Last delete patroli_darat
+                $patroliDarat->delete();
+            }
 
             // Delete patroli_udara
             $patroliUdara = PatroliUdara::where('lokasi_patroli_id', '=', $lokasiPatroli->id);
-            $patroliUdara->delete();
-
+            if($patroliUdara != null) {
+                $patroliUdara->delete();
+            }
             // Delete lokasi patroli
             $lokasiPatroli->delete();
         }
