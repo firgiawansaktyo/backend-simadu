@@ -529,7 +529,7 @@ class PatroliController extends Controller
         }
     }
 
-    private function storePatroliUdara($data = array(), $kegiatanPatroliId = NULL)
+    private function storePatroliUdara($data = array(), $kegiatanPatroliId)
     // = NULL
     {
         $patroliUdara = new PatroliUdara;

@@ -38,7 +38,7 @@ class AnggotaDaopsController extends Controller
                      ->join('daops', 'daops.id', '=', 'anggota_daops.daops_id')
                      ->join('anggota', 'anggota.id', '=', 'anggota_daops.anggota_id')
                      ->where('daops_id', '=', $angg->daops_id)
-                     ->select('anggota_daops.*','daops.*','anggota.*')
+                     ->select('anggota_daops.*','daops.*','anggota.*','daops.nama')
                      ->orderBy('daops_id')
                      ->get();
         // $anggotajoin = DB::table('pengguna') ->join('anggota', function($join)
