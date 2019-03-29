@@ -76,7 +76,7 @@ class PatroliController extends Controller
         if (!empty($data['tanggal_patroli']))
             $patrolis->where('tanggal_patroli', $data['tanggal_patroli']);
 
-        $patrolis = $patrolis->orderBy('id', 'DESC')->get();
+        $patrolis = $patrolis->orderBy('id', 'ASC')->get();
 
         return response([
             'data' => $patrolis
@@ -98,11 +98,12 @@ class PatroliController extends Controller
         $kegiatanPatroli->tanggal_patroli     = $data['tanggal_patroli'];
         $kegiatanPatroli->kategori_patroli_id = $data['kategori_patroli_id'];
         $kegiatanPatroli->save();
-
+        
+        
         $this->storeKegiatanPatroliRelation($data, $kegiatanPatroli);
               
         return response([
-            'message' => 'Create laporan kegiatan patroli sukses.'
+            'message' => 'Create laporan kegiatan patroli sukses.',
         ]);
     }
 
@@ -518,7 +519,6 @@ class PatroliController extends Controller
         {
             foreach ($data['patroli_darat'] as $patroliDarat)
                 $this->storePatroliDarat($patroliDarat, $kegiatanPatroli->id);
-            
         }
 
         // Insert tabel patroli_udara
@@ -532,10 +532,48 @@ class PatroliController extends Controller
     private function storePatroliUdara($data = array(), $kegiatanPatroliId)
     // = NULL
     {
-        $patroliUdara = new PatroliUdara;
-        $patroliUdara->kegiatan_patroli_id= $kegiatanPatroliId;
-        // ->kegiatan_patroli_id 
-        foreach($data as $key => $dataVal) { if (!is_array($dataVal)) $patroliUdara->{$key} = $dataVal; }
+        $lokasiPatroliFields = array(
+            'desa_kelurahan_id',
+            'cuaca_pagi_id',
+            'cuaca_siang_id',
+            'cuaca_sore_id',
+            'curah_hujan_id',
+            'ffmc_kkas_id',
+            'fwi_id',
+            'dc_kk_id',
+            'suhu',
+            'kelembaban',
+            'kecepatan_angin',
+            'latitude',
+            'longitude'
+        );
+        $lokasiPatroli = new LokasiPatroli;
+        $lokasiPatroli->kegiatan_patroli_id = $kegiatanPatroliId;
+        foreach($lokasiPatroliFields as $field) {
+            foreach($data as $dataKey => $dataVal) {
+                if (!is_array($dataVal) && $dataKey == $field) {
+                    $lokasiPatroli->{$dataKey} = $dataVal;
+                }
+            }
+        }
+        $lokasiPatroli->save();
+
+        $patroliUdaraFields = array(
+            'confidence',
+            'distance',
+            'radial',
+            'kegiatan',
+            'keterangan'
+        );
+
+        $patroliUdara = new PatroliUdara;        
+        $patroliUdara->lokasi_patroli_id = $lokasiPatroli->id;
+        foreach($patroliUdaraFields as $field) {
+            foreach($data as $key => $dataVal) { 
+                if (!is_array($dataVal) && $key == $field) 
+                    $patroliUdara->{$key} = $dataVal; 
+            }
+        }
         $patroliUdara->save();
     }
 
@@ -585,7 +623,6 @@ class PatroliController extends Controller
             }
         }
         $patroliDarat->save();
-
         // Insert ke tabel hasil_uji
         $this->storeHasilUji($data, $patroliDarat->id);
         // Insert ke tabel kondisi_sumber_air
@@ -786,34 +823,36 @@ class PatroliController extends Controller
         foreach ($lokasiPatrolis as $lokasiPatroli)
         {
             $patroliDarat = PatroliDarat::where('lokasi_patroli_id', '=', $lokasiPatroli->id)->first();
+            if($patroliDarat != null) {
+                // Delete hasil_uji
+                $hasilUji = HasilUji::where('patroli_darat_id', '=', $patroliDarat->id);
+                $hasilUji->delete();
+                
+                // Delete kondisi_sumber_air
+                $kondisiSumberAir = KondisiSumberAir::where('patroli_darat_id', '=', $patroliDarat->id);
+                $kondisiSumberAir->delete();
 
-            // Delete hasil_uji
-            $hasilUji = HasilUji::where('patroli_darat_id', '=', $patroliDarat->id);
-            $hasilUji->delete();
-            
-            // Delete kondisi_sumber_air
-            $kondisiSumberAir = KondisiSumberAir::where('patroli_darat_id', '=', $patroliDarat->id);
-            $kondisiSumberAir->delete();
+                // Delete kondisi_tanah
+                $kondisiTanah = KondisiTanah::where('patroli_darat_id', '=', $patroliDarat->id);
+                $kondisiTanah->delete();
 
-            // Delete kondisi_tanah
-            $kondisiTanah = KondisiTanah::where('patroli_darat_id', '=', $patroliDarat->id);
-            $kondisiTanah->delete();
+                // Kondisi vegetasi
+                $kondisiVegetasi = KondisiVegetasi::where('patroli_darat_id', '=', $patroliDarat->id);
+                $kondisiVegetasi->delete();
 
-            // Kondisi vegetasi
-            $kondisiVegetasi = KondisiVegetasi::where('patroli_darat_id', '=', $patroliDarat->id);
-            $kondisiVegetasi->delete();
+                // Delete pemadaman
+                $pemadaman = Pemadaman::where('patroli_darat_id', '=', $patroliDarat->id);
+                $pemadaman->delete();
 
-            // Delete pemadaman
-            $pemadaman = Pemadaman::where('patroli_darat_id', '=', $patroliDarat->id);
-            $pemadaman->delete();
-
-            // Last delete patroli_darat
-            $patroliDarat->delete();
+                // Last delete patroli_darat
+                $patroliDarat->delete();
+            }
 
             // Delete patroli_udara
             $patroliUdara = PatroliUdara::where('lokasi_patroli_id', '=', $lokasiPatroli->id);
-            $patroliUdara->delete();
-
+            if($patroliUdara != null) {
+                $patroliUdara->delete();
+            }
             // Delete lokasi patroli
             $lokasiPatroli->delete();
         }
