@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Anggota;
+use App\Models\Daops;
+use App\Models\AnggotaDaops;
 
 class AnggotaController extends Controller
 {
@@ -12,7 +14,8 @@ class AnggotaController extends Controller
         $this->validate($request, [
             'kategori_anggota_id' => 'required',
             'nama' => 'required',
-            'no_telepon' => 'required'
+            'no_telepon' => 'required',
+            'daops_id' => 'required'
         ]);
 
         $data = $request->all();
@@ -24,11 +27,30 @@ class AnggotaController extends Controller
         $anggota->no_telepon = $data['no_telepon'];
         $anggota->save();
 
-        $insertedAnggota = Anggota::where('id', $anggota->id)->first()->toArray();
+        // $insertedAnggota = Anggota::where('id', $anggota->id)->first()->toArray();
+        $insertedAnggota = Anggota::where('id', $anggota->id)->first();
+        $daops = Daops::find($request->input('daops_id'));
+        if (!$daops)
+        {
+            return response()->json(
+                array('message'=>'Daops with id '.$request->input('daops_id').' not found'), 404);
+        }
+
+        // Assign  daops to anggota
+        $anggotaDaops = new AnggotaDaops();
+        $anggotaDaops->anggota_id = $anggota->id;
+        $anggotaDaops->daops_id = $request->input('daops_id');
+        $anggotaDaops->save();
+
+        $insertedAnggota = Anggota::with([
+            'anggotaDaops.daops'
+        ])
+        ->where('id', $anggota->id)
+        ->first();
 
         return response([
-            'message' => 'Create anggota patroli sukses.',
-            'anggotaBaru' => $insertedAnggota
+            'message' => 'Create anggota success.',
+            // 'anggota' => $anggota
         ]);
     }
 

@@ -95,7 +95,7 @@ class AnggotaDaopsController extends Controller
                 400);
         }
 
-        // Assign menu daops to anggota
+        // Assign  daops to anggota
         $anggotaDaops = new AnggotaDaops();
         $anggotaDaops->anggota_id = $req->input('anggota_id');
         $anggotaDaops->daops_id = $req->input('daops_id');
