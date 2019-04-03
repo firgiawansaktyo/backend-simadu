@@ -18,7 +18,10 @@ class DesaKelurahan extends Model
     {
         return $this->hasMany('App\Models\PatroliDarat');
     }
-
+    public function lokasiPatroli()
+    {
+        return $this->hasMany('App\Models\PatroliDarat');
+    }
     public function kecamatan()
     {
         return $this->belongsTo('App\Models\Kecamatan');

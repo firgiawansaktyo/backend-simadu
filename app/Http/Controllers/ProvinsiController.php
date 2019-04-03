@@ -109,19 +109,21 @@ class ProvinsiController extends Controller
         };
         
         $kegiatanPatroliDarat = KegiatanPatroli::with([
-                                'patroliDarat.desaKelurahan.kecamatan.kotaKab.daops.provinsi'
+                                'lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
+                                'lokasiPatroli.patroliDarat'
                             ])
-                            ->where('tanggal_patroli', $today)
-                            ->whereHas('patroliDarat.desaKelurahan.kecamatan.kotaKab.daops.provinsi', function ($query) use ($kode) {
+                            ->whereYear('tanggal_patroli', $year)
+                            ->whereHas('lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi', function ($query) use ($kode) {
                                 $query->where('provinsi.id', $kode);
                             })
                             ->get();
 
         $kegiatanPatroliUdara = KegiatanPatroli::with([
-                                'patroliUdara.desaKelurahan.kecamatan.kotaKab.daops.provinsi'
+                                'lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
+                                'lokasiPatroli.patroliUdara'
                             ])
-                            ->where('tanggal_patroli', $today)
-                            ->whereHas('patroliUdara.desaKelurahan.kecamatan.kotaKab.daops.provinsi', function ($query) use ($kode) {
+                            ->whereYear('tanggal_patroli', $year)
+                            ->whereHas('lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi', function ($query) use ($kode) {
                                 $query->where('provinsi.id', $kode);
                             })
                             ->get();
@@ -132,10 +134,15 @@ class ProvinsiController extends Controller
             $kegiatanPatroliDarat = $kegiatanPatroliDarat->toArray();
             foreach($kegiatanPatroliDarat as $pd)
             {
-                if (!empty($pd['patroli_darat']))
+                foreach($pd['lokasi_patroli'] as $pd2)
+            {
+                // echo $pd2['patroli_darat']['aktivitas_masyarakat'];
+                if (!empty($pd2['patroli_darat']))
                     $countPatroliDaratHarian++;
+                }
             }
         }
+        
 
         $countPatroliUdaraHarian = 0;
         if ($kegiatanPatroliDarat)
@@ -143,37 +150,45 @@ class ProvinsiController extends Controller
             $kegiatanPatroliUdara = $kegiatanPatroliUdara->toArray();
             foreach($kegiatanPatroliUdara as $pu)
             {
-                if (!empty($pu['patroli_udara']))
+                foreach($pd['lokasi_patroli'] as $pu2){
+                if (!empty($pu2['patroli_udara']))
                     $countPatroliUdaraHarian++;
+                }
             }
         }
-        
+        // return response ($countPatroliUdaraHarian);
         // Jumlah kebakaran
-        $jmlKebakaran = Pemadaman::with([
-            'patroliDarat.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
-            'patroliDarat.kegiatanPatroli'
+        $jmlKebakaran = KegiatanPatroli::with([
+            'lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
+            'lokasiPatroli.patroliDarat.Pemadaman'
         ])
-        ->whereHas('patroliDarat.desaKelurahan.kecamatan.kotaKab.daops.provinsi', function ($query) use ($kode) {
+        ->whereHas('lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi', function ($query) use ($kode) {
             $query->where('provinsi.id', $kode);
         })
-        ->whereHas('patroliDarat.kegiatanPatroli', function ($query) use ($today) {
-            $query->where('tanggal_patroli', $today);
-        })
+        // ->whereHas('patroliDarat.kegiatanPatroli', function ($query) use ($today) {
+        //     $query->where('tanggal_patroli', $today);
+        // })
+        ->whereYear('tanggal_patroli', $year)
         ->count();
+        // ->get();
 
-        //////////// Statistik Tahunan //////////////////
+
+        // //////////// Statistik Tahunan //////////////////
         // Jumlah kebakaran
-        $jmlKebakaranTahun = Pemadaman::with([
-            'patroliDarat.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
-            'patroliDarat.kegiatanPatroli'
+        $jmlKebakaranTahun = KegiatanPatroli::with([
+            'lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
+            'lokasiPatroli.patroliDarat.Pemadaman'
         ])
-        ->whereHas('patroliDarat.desaKelurahan.kecamatan.kotaKab.daops.provinsi', function ($query) use ($kode) {
+        ->whereHas('lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi', function ($query) use ($kode) {
             $query->where('provinsi.id', $kode);
         })
-        ->whereHas('patroliDarat.kegiatanPatroli', function ($query) use ($year) {
-            $query->whereYear('tanggal_patroli', '=', $year);
-        })
+        // ->whereHas('patroliDarat.kegiatanPatroli', function ($query) use ($year) {
+        //     $query->whereYear('tanggal_patroli', '=', $year);
+        // })
+        ->whereYear('tanggal_patroli', $year)
         ->count();
+        // ->get();
+                
 
         // Jumlah daops
         $jumlahDaops = Daops::with([
@@ -183,6 +198,7 @@ class ProvinsiController extends Controller
             $query->where('provinsi.id', $kode);
         })
         ->count();
+        // return response ($jumlahDaops);
 
         return response([
             'query' => array(
