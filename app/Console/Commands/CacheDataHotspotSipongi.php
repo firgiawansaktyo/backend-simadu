@@ -45,7 +45,7 @@ class CacheDataHotspotSipongi extends Command
     public function handle()
     {
         $client = new Client();
-        $res = $client->request('GET', 'http://sipongi.menlhk.go.id/action/indohotspot');
+        $res = $client->request('GET', 'http://sipongi.menlhk.go.id/action/indohotspot?late=24&satelit=&confidence=50');
         $res = $res->getBody()->getContents();
         $res = json_decode($res, TRUE);
         

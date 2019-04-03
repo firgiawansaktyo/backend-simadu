@@ -194,7 +194,7 @@ class PatroliController extends Controller
 
         if ($daops == NULL) {
             return response([
-                'message' => 'Daops denga id '.$daopsId.' tidak ditemukan.'
+                'message' => 'Daops dengan id '.$daopsId.' tidak ditemukan.'
             ]);
         }
 
@@ -208,7 +208,7 @@ class PatroliController extends Controller
                 $q->whereHas('anggotaPatroli', function ($q) use ($daopsId, $tanggal) {
                     $q->whereHas('kegiatanPatroli', function ($q) use ($daopsId, $tanggal) {
                         $q->where('tanggal_patroli', $tanggal); // Filter by tanggal
-                        $q->whereHas('patroliDarat', function ($q) use ($daopsId, $tanggal) {
+                        $q->whereHas('lokasiPatroli', function ($q) use ($daopsId, $tanggal) {
                             $q->whereHas('desaKelurahan', function ($q) use ($daopsId, $tanggal) {
                                 $q->whereHas('kecamatan', function ($q) use ($daopsId, $tanggal) {
                                     $q->whereHas('kotaKab', function ($q) use ($daopsId, $tanggal) {
@@ -246,7 +246,7 @@ class PatroliController extends Controller
         // 4. Kegiatan Patroli
         $kegiatanPatroli = KegiatanPatroli::with([
             // Patroli Darat
-            'patroliDarat' => function ($q) use ($daopsId) {
+            'lokasiPatroli' => function ($q) use ($daopsId) {
                 $q->whereHas('desaKelurahan', function ($q) use ($daopsId) {
                     $q->whereHas('kecamatan', function ($q) use ($daopsId) {
                         $q->whereHas('kotakab', function ($q) use ($daopsId) {
@@ -257,19 +257,19 @@ class PatroliController extends Controller
                     });
                 });
             },
-            'patroliDarat.kondisiVegetasi.vegetasi',
-            'patroliDarat.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
-            'patroliDarat.kondisiVegetasi.kategoriKondisiVegetasi',
-            'patroliDarat.kondisiTanah.tanah',
-            'patroliDarat.kondisiSumberAir.sumberAir',
-            'patroliDarat.kadarAirBahanBakar',
-            'patroliDarat.cuacaPagi',
-            'patroliDarat.cuacaSiang',
-            'patroliDarat.cuacaSore',
-            'patroliDarat.pemadaman.tipeKebakaran',
-            'patroliDarat.pemadaman.pemilikLahan',
+            'lokasiPatroli.patroliDarat.kondisiVegetasi.vegetasi',
+            'lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
+            'lokasiPatroli.patroliDarat.kondisiVegetasi.kategoriKondisiVegetasi',
+            'lokasiPatroli.patroliDarat.kondisiTanah.tanah',
+            'lokasiPatroli.patroliDarat.kondisiSumberAir.sumberAir',
+            'lokasiPatroli.patroliDarat.kadarAirBahanBakar',
+            'lokasiPatroli.cuacaPagi',
+            'lokasiPatroli.cuacaSiang',
+            'lokasiPatroli.cuacaSore',
+            'lokasiPatroli.patroliDarat.pemadaman.tipeKebakaran',
+            'lokasiPatroli.patroliDarat.pemadaman.pemilikLahan',
             
-            'patroliUdara' => function ($q) use ($daopsId) {
+            'lokasiPatroli' => function ($q) use ($daopsId) {
                 $q->whereHas('desaKelurahan', function ($q) use ($daopsId) {
                     $q->whereHas('kecamatan', function ($q) use ($daopsId) {
                         $q->whereHas('kotakab', function ($q) use ($daopsId) {
@@ -280,12 +280,53 @@ class PatroliController extends Controller
                     });
                 });
             },
-            'patroliUdara.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
-            'patroliUdara.cuacaPagi',
-            'patroliUdara.cuacaSiang',
-            'patroliUdara.cuacaSore',
+            'lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
+            'lokasiPatroli.cuacaPagi',
+            'lokasiPatroli.cuacaSiang',
+            'lokasiPatroli.cuacaSore',
 
             'anggotaPatroli.anggota.kategoriAnggota'
+            // // Patroli Darat
+            // 'patroliDarat' => function ($q) use ($daopsId) {
+            //     $q->whereHas('desaKelurahan', function ($q) use ($daopsId) {
+            //         $q->whereHas('kecamatan', function ($q) use ($daopsId) {
+            //             $q->whereHas('kotakab', function ($q) use ($daopsId) {
+            //                 $q->whereHas('daops', function ($q) use ($daopsId) {
+            //                     $q->where('id', $daopsId);
+            //                 });
+            //             });
+            //         });
+            //     });
+            // },
+            // 'patroliDarat.kondisiVegetasi.vegetasi',
+            // 'patroliDarat.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
+            // 'patroliDarat.kondisiVegetasi.kategoriKondisiVegetasi',
+            // 'patroliDarat.kondisiTanah.tanah',
+            // 'patroliDarat.kondisiSumberAir.sumberAir',
+            // 'patroliDarat.kadarAirBahanBakar',
+            // 'patroliDarat.cuacaPagi',
+            // 'patroliDarat.cuacaSiang',
+            // 'patroliDarat.cuacaSore',
+            // 'patroliDarat.pemadaman.tipeKebakaran',
+            // 'patroliDarat.pemadaman.pemilikLahan',
+            
+            // 'patroliUdara' => function ($q) use ($daopsId) {
+            //     $q->whereHas('desaKelurahan', function ($q) use ($daopsId) {
+            //         $q->whereHas('kecamatan', function ($q) use ($daopsId) {
+            //             $q->whereHas('kotakab', function ($q) use ($daopsId) {
+            //                 $q->whereHas('daops', function ($q) use ($daopsId) {
+            //                     $q->where('id', $daopsId);
+            //                 });
+            //             });
+            //         });
+            //     });
+            // },
+            // 'patroliUdara.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
+            // 'patroliUdara.cuacaPagi',
+            // 'patroliUdara.cuacaSiang',
+            // 'patroliUdara.cuacaSore',
+
+            // 'anggotaPatroli.anggota.kategoriAnggota'
         ])
         ->where('tanggal_patroli', $tanggal)
         ->get()
@@ -297,7 +338,7 @@ class PatroliController extends Controller
             'kategoriAnggota' => $kategoriAnggota,
             'kegiatanPatroli' => $kegiatanPatroli
         ];
-
+        
         if ($load == 'pdf')
             return app()->make('dompdf.wrapper')->loadView('LaporanPdf', $result)->stream();
         else if ($load == 'json')
@@ -502,6 +543,7 @@ class PatroliController extends Controller
 
     private function storeKegiatanPatroliRelation($data = array(), $kegiatanPatroli)
     {
+        
         // Data general, baik patroli darat maupun patroli udara mesti create data ini
         // Insert tabel inventori_patroli
         $this->storeInventoriPatroli($data, $kegiatanPatroli->id);

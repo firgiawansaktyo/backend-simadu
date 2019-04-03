@@ -54,14 +54,14 @@
       </thead>
       <tbody>
         <?php foreach($kegiatanPatroli as $itemKegiatanPatroli): ?>
-          <?php foreach($itemKegiatanPatroli['patroli_darat'] as $key => $pd): ?>
+          <?php foreach($itemKegiatanPatroli['lokasi_patroli'] as $key => $pd): ?>
           <tr>
             <td><?=++$key?></td>
             <td><?=ucwords($pd['desa_kelurahan']['nama'])?></td>
             <td><?=ucwords($pd['desa_kelurahan']['kecamatan']['kota_kab']['nama'])?></td>
           </tr>
           <?php endforeach ?>
-          <?php foreach($itemKegiatanPatroli['patroli_udara'] as $key => $pu): ?>
+          <?php foreach($itemKegiatanPatroli['lokasi_patroli']as $key => $pu): ?>
           <tr>
             <td><?=++$key?></td>
             <td><?=ucwords($pu['desa_kelurahan']['nama'])?></td>
@@ -87,7 +87,7 @@
       </thead>
       <tbody>
         <?php foreach($kegiatanPatroli as $itemKegiatanPatroli): ?>
-          <?php foreach($itemKegiatanPatroli['patroli_darat'] as $key => $pd): ?>
+          <?php foreach($itemKegiatanPatroli['lokasi_patroli'] as $key => $pd): ?>
           <tr>
             <td><?=++$key?></td>
             <td><?=ucwords($pd['desa_kelurahan']['nama'])?></td>
@@ -96,7 +96,7 @@
             <td><?=ucwords($pd['cuaca_sore']['nama'])?></td>
           </tr>
           <?php endforeach ?>
-          <?php foreach($itemKegiatanPatroli['patroli_udara'] as $key => $pu): ?>
+          <?php foreach($itemKegiatanPatroli['lokasi_patroli'] as $key => $pu): ?>
           <tr>
             <td><?=++$key?></td>
             <td><?=ucwords($pu['desa_kelurahan']['nama'])?></td>
@@ -127,7 +127,7 @@
       </thead>
       <tbody>
         <?php $noKegiatanPatroli = 0; foreach($kegiatanPatroli as $itemKegiatanPatroli): ?>
-          <?php foreach($itemKegiatanPatroli['patroli_darat'] as $key => $pd): ?>
+          <?php foreach($itemKegiatanPatroli['lokasi_patroli'] as $key => $pd): ?>
           <tr>
             <!-- No -->
             <td><?=++$noKegiatanPatroli?></td>
@@ -143,13 +143,13 @@
             <!-- Koordinat -->
             <td>
               <?php
-                if (!empty($pd['kondisi_vegetasi']) && isset($pd['kondisi_vegetasi'])) {
-                  echo "Lat: ".$pd['kondisi_vegetasi'][0]['latitude'] . "<br>";
-                  echo "Long: ".$pd['kondisi_vegetasi'][0]['longitude'];
+                if (!empty($pd['patroli_darat']['kondisi_vegetasi']) && isset($pd['patroli_darat']['kondisi_vegetasi'])) {
+                  echo "Lat: ".$pd['patroli_darat']['kondisi_vegetasi'][0]['latitude'] . "<br>";
+                  echo "Long: ".$pd['patroli_darat']['kondisi_vegetasi'][0]['longitude'];
                 }
-                else if (!empty($pd['kondisi_sumber_air']) && isset($pd['kondisi_sumber_air'])) {
-                  echo "Lat: ".$pd['kondisi_sumber_air'][0]['latitude'] . "<br>";
-                  echo "Long: ".$pd['kondisi_sumber_air'][0]['longitude'];
+                else if (!empty($pd['patroli_darat']['kondisi_sumber_air']) && isset($pd['patroli_darat']['kondisi_sumber_air'])) {
+                  echo "Lat: ".$pd['patroli_darat']['kondisi_sumber_air'][0]['latitude'] . "<br>";
+                  echo "Long: ".$pd['patroli_darat']['kondisi_sumber_air'][0]['longitude'];
                 }
               ?>
             </td>
@@ -158,7 +158,7 @@
             <td>
               <?php
                 $vegs = [];
-                foreach($pd['kondisi_vegetasi'] as $kv) {
+                foreach($pd['patroli_darat']['kondisi_vegetasi'] as $kv) {
                   array_push($vegs, ucwords($kv['vegetasi']['nama']));
                 }
                 $vegs = implode(',', $vegs);
@@ -171,7 +171,7 @@
               <?php
                 $soils = [];
                 $gambutDeeps = [];
-                foreach($pd['kondisi_tanah'] as $kt) {
+                foreach($pd['patroli_darat']['kondisi_tanah'] as $kt) {
                   array_push($soils, ucwords($kt['tanah']['nama']));
                   array_push($gambutDeeps, $kt['kedalaman_gambut']);
                 }
@@ -193,7 +193,7 @@
               <?php
                 $waterSources = [];
                 $waterDeeps = [];
-                foreach($pd['kondisi_sumber_air'] as $ksa) {
+                foreach($pd['patroli_darat']['kondisi_sumber_air'] as $ksa) {
                   array_push($waterSources, ucwords($ksa['sumber_air']['name']));
                   array_push($waterDeeps, $ksa['kedalaman']);
                 }
@@ -219,9 +219,9 @@
   <div id="pemadaman">
     <h3>5. Pemadaman</h3>
     <?php $noPemadaman = 0; foreach($kegiatanPatroli as $itemKegiatanPatroli): ?>
-      <?php foreach($itemKegiatanPatroli['patroli_darat'] as $pd): ?>
-        <?php if (!empty($pd['pemadaman'])): ?>
-          <?php foreach($pd['pemadaman'] as $key => $pemadaman): ?>
+      <?php foreach($itemKegiatanPatroli['lokasi_patroli'] as $pd): ?>
+        <?php if (!empty($pd['patroli_darat']['pemadaman'])): ?>
+          <?php foreach($pd['patroli_darat']['pemadaman'] as $key => $pemadaman): ?>
             <table class="table-padding table-bordered" style="margin-bottom: 10px;">
               <tr>
                 <td>No</td>
@@ -261,7 +261,7 @@
                 <td>
                 <?php
                   $vegs = [];
-                  foreach($pd['kondisi_vegetasi'] as $kv) {
+                  foreach($pd['patroli_darat']['kondisi_vegetasi'] as $kv) {
                     array_push($vegs, ucwords($kv['vegetasi']['nama']));
                   }
                   $vegs = implode(',', $vegs);
@@ -275,7 +275,7 @@
                 <?php
                   $soils = [];
                   $gambutDeeps = [];
-                  foreach($pd['kondisi_tanah'] as $kt) {
+                  foreach($pd['patroli_darat']['kondisi_tanah'] as $kt) {
                     array_push($soils, ucwords($kt['tanah']['nama']));
                     array_push($gambutDeeps, $kt['kedalaman_gambut']);
                   }
@@ -299,7 +299,7 @@
                   <?php
                     $waterSources = [];
                     $waterDeeps = [];
-                    foreach($pd['kondisi_sumber_air'] as $ksa) {
+                    foreach($pd['patroli_darat']['kondisi_sumber_air'] as $ksa) {
                       array_push($waterSources, ucwords($ksa['sumber_air']['name']));
                       array_push($waterDeeps, $ksa['kedalaman']);
                     }
