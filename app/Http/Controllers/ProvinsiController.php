@@ -127,7 +127,52 @@ class ProvinsiController extends Controller
                                 $query->where('provinsi.id', $kode);
                             })
                             ->get();
-        
+        $kegiatanPatroliDaratHarian = KegiatanPatroli::with([
+                                'lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
+                                'lokasiPatroli.patroliDarat'
+                            ])
+                            ->where('tanggal_patroli', $today)
+                            ->whereHas('lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi', function ($query) use ($kode) {
+                                $query->where('provinsi.id', $kode);
+                            })
+                            ->get();
+
+        $kegiatanPatroliUdaraHarian = KegiatanPatroli::with([
+                                'lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi',
+                                'lokasiPatroli.patroliUdara'
+                            ])
+                            ->where('tanggal_patroli', $today)
+                            ->whereHas('lokasiPatroli.desaKelurahan.kecamatan.kotaKab.daops.provinsi', function ($query) use ($kode) {
+                                $query->where('provinsi.id', $kode);
+                            })
+                            ->get();        
+        $countPatroliDarat = 0;
+        if ($kegiatanPatroliDaratHarian)
+        {
+            $kegiatanPatroliDaratHarian = $kegiatanPatroliDaratHarian->toArray();
+            foreach($kegiatanPatroliDaratHarian as $pd)
+            {
+                foreach($pd['lokasi_patroli'] as $pd2)
+            {
+                // echo $pd2['patroli_darat']['aktivitas_masyarakat'];
+                if (!empty($pd2['patroli_darat']))
+                    $countPatroliDarat++;
+                }
+            }
+        }
+        $countPatroliUdara= 0;
+        if ($kegiatanPatroliUdaraHarian)
+        {
+            $kegiatanPatroliUdaraHarian = $kegiatanPatroliUdaraHarian->toArray();
+            foreach($kegiatanPatroliUdaraHarian as $pu)
+            {
+                foreach($pd['lokasi_patroli'] as $pu2){
+                if (!empty($pu2['patroli_udara']))
+                    $countPatroliUdara++;
+                }
+            }
+        }
+
         $countPatroliDaratHarian = 0;
         if ($kegiatanPatroliDarat)
         {
@@ -145,7 +190,7 @@ class ProvinsiController extends Controller
         
 
         $countPatroliUdaraHarian = 0;
-        if ($kegiatanPatroliDarat)
+        if ($kegiatanPatroliUdara)
         {
             $kegiatanPatroliUdara = $kegiatanPatroliUdara->toArray();
             foreach($kegiatanPatroliUdara as $pu)
@@ -168,7 +213,7 @@ class ProvinsiController extends Controller
         // ->whereHas('patroliDarat.kegiatanPatroli', function ($query) use ($today) {
         //     $query->where('tanggal_patroli', $today);
         // })
-        ->whereYear('tanggal_patroli', $year)
+        ->where('tanggal_patroli', $today)
         ->count();
         // ->get();
 
@@ -212,6 +257,10 @@ class ProvinsiController extends Controller
             'statistik_tahunan' => [
                 'kebakaran' => $jmlKebakaranTahun,
                 'daops' => $jumlahDaops
+            ]            ,
+            'patroli' =>[
+                'patroli_udara' => $countPatroliUdara,
+                'patroli_darat' => $countPatroliDarat
             ]
         ]);
     }
