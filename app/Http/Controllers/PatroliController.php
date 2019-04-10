@@ -171,7 +171,7 @@ class PatroliController extends Controller
     }
 
     public function unduh_laporan_patroli(Request $request)
-    {	
+    {   
         $this->validate($request, [
             'load' => 'required',
             'tanggal' => 'required',
