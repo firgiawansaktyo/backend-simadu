@@ -28,8 +28,12 @@ class AnggotaDaopsController extends Controller
 
     public function anggotaList()
     {
+        $user = Auth::User();
+        $useremail = $user->email;
+
         $angg = DB::table('anggota')
             ->join('pengguna', 'anggota.email', '=', 'pengguna.email')
+            ->where('pengguna.email', '=', $useremail)
             ->join('anggota_daops', 'anggota.id', '=', 'anggota_daops.anggota_id')
             ->select('anggota.*', 'anggota_daops.*')
             ->first();
