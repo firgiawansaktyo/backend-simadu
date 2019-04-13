@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Daops;
+use App\Models\KotaKab;
+
 
 class DaopsController extends Controller
 {
@@ -16,22 +18,27 @@ class DaopsController extends Controller
             ]);
         }
 
+        $daops = Daops::with(['kotakab'])
+        ->get();
+
         return response([
-            'data' => Daops::all()
+            'data' => $daops
         ]);
     }
 
     public function store(Request $request)
     {
         $this->validate($request, [
-            'provinsi_id' => 'required',
+            'kotakab_id' => 'required',
             'nama' => 'required'
         ]);
 
         $data = $request->all();
 
         $daops = new Daops;
-        $daops->provinsi_id = $data['provinsi_id'];
+
+        // Ini dirubah untuk disesuaikan dengan kota_kab
+        $daops->kotakab_id = $data['kotakab_id'];
         $daops->nama = $data['nama'];
         $daops->save();
 
@@ -43,7 +50,7 @@ class DaopsController extends Controller
     public function update(Request $request)
     {
         $this->validate($request, [
-            'provinsi_id' => 'required',
+            'kotakab_id' => 'required',
             'nama' => 'required',
             'id' => 'required'
         ]);
@@ -60,7 +67,7 @@ class DaopsController extends Controller
             ]);
         }
 
-        $daops->provinsi_id = $data['provinsi_id'];
+        $daops->kotakab_id = $data['kotakab_id'];
         $daops->nama = $data['nama'];
         $daops->save();
 

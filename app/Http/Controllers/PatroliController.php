@@ -18,6 +18,7 @@ use App\Models\Anggota;
 use App\Models\AnggotaPatroli;
 use App\Models\KategoriAnggota;
 use App\Models\Daops;
+use App\Models\KotaKab;
 use App\Models\Provinsi;
 use App\Models\LokasiPatroli;
 
@@ -48,7 +49,7 @@ class PatroliController extends Controller
             'dokumentasi',
 
             // lokasi patroli
-            'lokasiPatroli.desaKelurahan.kecamatan.kotakab.daops.provinsi',
+            'lokasiPatroli.desaKelurahan.kecamatan.kotakab.provinsi',
             'lokasiPatroli.cuacaPagi',
             'lokasiPatroli.cuacaSiang',
             'lokasiPatroli.cuacaSore',
@@ -422,8 +423,8 @@ class PatroliController extends Controller
         $daopsId = $filter['daops'];
 
         // Detail Daops
-        $daops = Daops::with([
-            'provinsi'
+        $daops = KotaKab::with([
+            'daops.kotaKab.provinsi'
         ])
         ->where('id', $daopsId)
         ->first()
