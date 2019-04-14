@@ -30,7 +30,6 @@ class AnggotaController extends Controller
         // $insertedAnggota = Anggota::where('id', $anggota->id)->first()->toArray();
         $insertedAnggota = Anggota::where('id', $anggota->id)->first();
         $daops = Daops::where('id', '=', $data['daops_id'])->get();
-        dd($daops);
         if (!$daops)
         {
             return response()->json(

@@ -16,12 +16,10 @@ class AnggotaDaopsController extends Controller
     public function list()
     {
         $anggota = Anggota::with([
-            'anggotaDaops.daops'
+            'anggotaDaops'
         ])
         
         ->get();
-
-        dd($anggota);
 
         return response([
             'anggota' => $anggota
