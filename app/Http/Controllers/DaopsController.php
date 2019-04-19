@@ -11,6 +11,7 @@ class DaopsController extends Controller
 {
     public function list(Request $r)
     {
+        // Ini buat apa?
         if ($r->has('key'))
         {
             return response([
@@ -18,7 +19,9 @@ class DaopsController extends Controller
             ]);
         }
 
-        $daops = Daops::with(['kotakab'])
+        $daops = Daops::with([
+            'kotaKab'
+        ])
         ->get();
 
         return response([
@@ -29,7 +32,7 @@ class DaopsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'kotakab_id' => 'required',
+            'kota_kab_id' => 'required',
             'nama' => 'required'
         ]);
 
@@ -38,7 +41,7 @@ class DaopsController extends Controller
         $daops = new Daops;
 
         // Ini dirubah untuk disesuaikan dengan kota_kab
-        $daops->kotakab_id = $data['kotakab_id'];
+        $daops->kota_kab_id = $data['kota_kab_id'];
         $daops->nama = $data['nama'];
         $daops->save();
 
@@ -50,7 +53,7 @@ class DaopsController extends Controller
     public function update(Request $request)
     {
         $this->validate($request, [
-            'kotakab_id' => 'required',
+            'kota_kab_id' => 'required',
             'nama' => 'required',
             'id' => 'required'
         ]);
@@ -67,7 +70,7 @@ class DaopsController extends Controller
             ]);
         }
 
-        $daops->kotakab_id = $data['kotakab_id'];
+        $daops->kota_kab_id = $data['kota_kab_id'];
         $daops->nama = $data['nama'];
         $daops->save();
 
