@@ -19,39 +19,43 @@ class AnggotaController extends Controller
         ]);
 
         $data = $request->all();
-
-        $anggota = new Anggota;
-        $anggota->kategori_anggota_id = $data['kategori_anggota_id'];
-        $anggota->nama = $data['nama'];
-        $anggota->email= $data['email'];
-        $anggota->no_telepon = $data['no_telepon'];
-        $anggota->save();
-
         // $insertedAnggota = Anggota::where('id', $anggota->id)->first()->toArray();
-        $insertedAnggota = Anggota::where('id', $anggota->id)->first();
         $daops = Daops::where('id', '=', $data['daops_id'])->get();
         if (!$daops)
         {
             return response()->json(
                 array('message'=>'Daops with id '.$request->input('daops_id').' not found'), 404);
         }
+        else
+        {     
+            // Inserting anggota to the DB
+            $anggota = new Anggota;
+            $anggota->kategori_anggota_id = $data['kategori_anggota_id'];
+            $anggota->nama = $data['nama'];
+            $anggota->email= $data['email'];
+            $anggota->no_telepon = $data['no_telepon'];
+            $anggota->save();
 
-        // Assign  daops to anggota
-        $anggotaDaops = new AnggotaDaops();
-        $anggotaDaops->anggota_id = $anggota->id;
-        $anggotaDaops->daops_id = $request->input('daops_id');
-        $anggotaDaops->save();
+            $insertedAnggota = Anggota::where('id', $anggota->id)->first();
 
-        $insertedAnggota = Anggota::with([
-            'anggotaDaops.daops'
-        ])
-        ->where('id', $anggota->id)
-        ->first();
-
-        return response([
-            'message' => 'Create anggota success.',
-            // 'anggota' => $anggota
-        ]);
+            // Assign  daops to anggota
+            $anggotaDaops = new AnggotaDaops();
+            $anggotaDaops->anggota_id = $anggota->id;
+            $anggotaDaops->daops_id = $request->input('daops_id');
+            $anggotaDaops->save();
+    
+            // just checking anggota with daops query
+            $insertedAnggota = Anggota::with([
+                'anggotaDaops.daops'
+            ])
+            ->where('id', $anggota->id)
+            ->first();
+    
+            return response([
+                'message' => 'Create anggota success.',
+                'data_created' => $insertedAnggota
+            ]);
+        }
     }
 
     public function list(Request $r)
