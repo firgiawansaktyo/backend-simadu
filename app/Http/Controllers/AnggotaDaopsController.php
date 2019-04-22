@@ -16,7 +16,7 @@ class AnggotaDaopsController extends Controller
     public function list()
     {
         $anggota = Anggota::with([
-            'anggotaDaops'
+            'anggotaDaops.daops.kotakab.provinsi'
         ])
         ->get();
 
