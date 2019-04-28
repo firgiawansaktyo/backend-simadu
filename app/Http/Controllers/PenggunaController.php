@@ -8,6 +8,7 @@ use App\Models\LevelAkses;
 use App\Models\HakAkses;
 use App\Models\Role;
 use App\Models\RoleUser;
+use App\Models\Daops;
 
 class PenggunaController extends Controller
 {
@@ -24,18 +25,18 @@ class PenggunaController extends Controller
             'nama' => 'required',
             'email' => 'required',
             'password' => 'required',
-            'role_id' => 'required'
+            'role_id' => 'required',
         ]);
 
-       $data = $request->all();
-       
-       $pengguna = new Pengguna;
-       $pengguna->nama = $data['nama'];
-       $pengguna->email = $data['email'];
-       $pengguna->password = app('hash')->make($data['password']);
-       $pengguna->save();
+        $data = $request->all();
+        
+        $pengguna = new Pengguna;
+        $pengguna->nama = $data['nama'];
+        $pengguna->email = $data['email'];
+        $pengguna->password = app('hash')->make($data['password']);
+        $pengguna->save();
 
-       $insertedPengguna = Pengguna::where('id', $pengguna->id)->first();
+        $insertedPengguna = Pengguna::where('id', $pengguna->id)->first();
 
         // Check role exist
         $role = Role::where('id', $request->input('role_id'))->first();
@@ -48,18 +49,12 @@ class PenggunaController extends Controller
         // Assign role to user
         $insertedPengguna->attachRole($role);
 
-        if($insertedPengguna->hasRole($role->name))
+        // For assigning a patrol leader to a daops
+        if($request->input('daops_id'))
         {
-            $insertedPengguna = Pengguna::with([
-                'roleUser.role'
-            ])
-            ->where('id', $pengguna->id)
-            ->first();
-
-            // return response([
-            //     'message' => 'Assign role to user success.',
-            //     // 'user' => $pengguna
-            // ]);
+            $daops = Daops::find($request->input('daops_id'));
+            $daops->ketua_id = $pengguna->id;
+            $daops->save();
         }
 
        return response([
@@ -75,6 +70,12 @@ class PenggunaController extends Controller
 
         $id = $request->all()['id'];
 
+        // Delete Ketua in Daops
+        $daops = Daops::where('ketua_id', '=', $id)->first();
+        $daops->ketua_id = null;
+        $daops->save();
+
+        // Delete pengguna
         $pengguna = Pengguna::find($id);
         $pengguna->delete();
 
