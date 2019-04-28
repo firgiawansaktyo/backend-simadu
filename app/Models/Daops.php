@@ -24,8 +24,8 @@ class Daops extends Model
         return $this->hasMany('App\Models\AnggotaDaops');
     }
 
-    public function ketuaDaops()
+    public function pengguna()
     {
-        return $this->hasOne('App\Models\Pengguna');
+        return $this->hasOne('App\Models\Pengguna', 'id', 'ketua_id');
     }
 }

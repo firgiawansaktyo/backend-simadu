@@ -12,15 +12,15 @@ class DaopsController extends Controller
     public function list(Request $r)
     {
         // Ini buat apa?
-        if ($r->has('key'))
-        {
-            return response([
-                'data' => Daops::where('nama', 'ilike', '%'.$r->input('key').'%')->get()
-            ]);
-        }
+        // if ($r->has('key'))
+        // {
+        //     return response([
+        //         'data' => Daops::where('nama', 'ilike', '%'.$r->input('key').'%')->get()
+        //     ]);
+        // }
 
         $daops = Daops::with([
-            'kotaKab'
+            'kotaKab','pengguna'
         ])
         ->get();
 
