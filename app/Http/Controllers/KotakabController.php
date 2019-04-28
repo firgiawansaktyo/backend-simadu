@@ -7,9 +7,9 @@ use App\Models\KotaKab;
 
 class KotakabController extends Controller
 {
-    public function list(Request $request, $prov_id)
+    public function list($prov_id = null)
     {
-        if($request) {
+        if($prov_id) {
             $kotaKab = KotaKab::where('provinsi_id', $prov_id)->get();
             return response([
                 'data' => $kotaKab
