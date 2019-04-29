@@ -72,9 +72,10 @@ class PenggunaController extends Controller
 
         // Delete Ketua in Daops
         $daops = Daops::where('ketua_id', '=', $id)->first();
-        $daops->ketua_id = null;
-        $daops->save();
-
+        if($daops) {
+            $daops->ketua_id = null;
+            $daops->save();
+        }
         // Delete pengguna
         $pengguna = Pengguna::find($id);
         $pengguna->delete();

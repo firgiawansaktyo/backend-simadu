@@ -9,7 +9,7 @@ use App\Models\KotaKab;
 
 class DaopsController extends Controller
 {
-    public function list(Request $r)
+    public function list()
     {
         // Ini buat apa?
         // if ($r->has('key'))
