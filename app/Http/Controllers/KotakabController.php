@@ -7,24 +7,43 @@ use App\Models\KotaKab;
 
 class KotakabController extends Controller
 {
-    public function list()
+    public function list(Request $request, $prov_id = null)
     {
-        return response([
-            'data' => KotaKab::all()
-        ]);
+        $data = $request->all();
+        if($prov_id) {
+            $kotaKab = KotaKab::where('provinsi_id', $prov_id)->get();
+            return response([
+                'data' => $kotaKab
+            ]);
+        }
+
+        if($data['kab_id']) {
+            $kotaKab = KotaKab::with([
+                'kecamatan.desaKelurahan'
+            ])
+            ->where('id', $data['kab_id'])
+            ->get();
+            
+            return response([
+                'data' => $kotaKab
+            ]);
+        }
+        
+        $kotakab = KotaKab::get();
+
     }
 
     public function store(Request $request)
     {
         $this->validate($request, [
-            'daops_id' => 'required',
+            'provinsi_id' => 'required',
             'nama' => 'required'
         ]);
 
         $data = $request->all();
 
         $kotakab = new KotaKab;
-        $kotakab->daops_id = $data['daops_id'];
+        $kotakab->provinsi_id = $data['provinsi_id'];
         $kotakab->nama = $data['nama'];
         $kotakab->save();
 
@@ -36,7 +55,7 @@ class KotakabController extends Controller
     public function update(Request $request)
     {
         $this->validate($request, [
-            'daops_id' => 'required',
+            'provinsi_id' => 'required',
             'nama' => 'required',
             'id' => 'required'
         ]);
@@ -44,7 +63,7 @@ class KotakabController extends Controller
         $data = $request->all();
 
         $kotakab = KotaKab::find($data['id']);
-        $kotakab->daops_id = $data['daops_id'];
+        $kotakab->provinsi_id = $data['provinsi_id'];
         $kotakab->nama = $data['nama'];
         $kotakab->save();
 

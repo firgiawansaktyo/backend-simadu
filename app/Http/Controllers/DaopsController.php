@@ -4,34 +4,60 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Daops;
+use App\Models\KotaKab;
+
 
 class DaopsController extends Controller
 {
-    public function list(Request $r)
+    public function list(Request $request)
     {
-        if ($r->has('key'))
-        {
+        $data = $request->all();
+
+        // Kalau ada ketua_id yang ingin dicari
+        if($data['ketua_id']) {
+            $daopsDesa = Daops::where('ketua_id', '=', $data['ketua_id'])
+            ->with([
+                'kotaKab.kecamatan.desaKelurahan'
+            ])
+            ->first();
+
             return response([
-                'data' => Daops::where('nama', 'ilike', '%'.$r->input('key').'%')->get()
+                'data' => $daopsDesa
             ]);
         }
 
+        // Yang biasa aja
+        $daops = Daops::with([
+            'kotaKab.kecamatan.desaKelurahan',
+        ])
+        ->get();
+
+        $ketua_daops = Daops::with([
+            'pengguna',
+        ])
+        ->get();
+
         return response([
-            'data' => Daops::all()
+            'data' => [
+                'daops' => $daops,
+                'ketua_daops' => $ketua_daops
+            ]
         ]);
     }
 
     public function store(Request $request)
     {
         $this->validate($request, [
-            'provinsi_id' => 'required',
+            'kota_kab_id' => 'required',
             'nama' => 'required'
         ]);
 
         $data = $request->all();
 
         $daops = new Daops;
-        $daops->provinsi_id = $data['provinsi_id'];
+
+        // Ini dirubah untuk disesuaikan dengan kota_kab
+        $daops->kota_kab_id = $data['kota_kab_id'];
         $daops->nama = $data['nama'];
         $daops->save();
 
@@ -43,7 +69,7 @@ class DaopsController extends Controller
     public function update(Request $request)
     {
         $this->validate($request, [
-            'provinsi_id' => 'required',
+            'kota_kab_id' => 'required',
             'nama' => 'required',
             'id' => 'required'
         ]);
@@ -60,7 +86,7 @@ class DaopsController extends Controller
             ]);
         }
 
-        $daops->provinsi_id = $data['provinsi_id'];
+        $daops->kota_kab_id = $data['kota_kab_id'];
         $daops->nama = $data['nama'];
         $daops->save();
 

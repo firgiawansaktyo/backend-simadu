@@ -65,6 +65,7 @@ $api->version('v1', function ($api) {
         // List Daops
         $api->get('/daops/list', 'DaopsController@list');
         // List Kota Kab
+        $api->get('/kotakab/list/{prov_id}', 'KotakabController@list');
         $api->get('/kotakab/list', 'KotakabController@list');
         // List Kecamatan
         $api->get('/kecamatan/list', 'KecamatanController@list');

@@ -18,6 +18,7 @@ use App\Models\Anggota;
 use App\Models\AnggotaPatroli;
 use App\Models\KategoriAnggota;
 use App\Models\Daops;
+use App\Models\KotaKab;
 use App\Models\Provinsi;
 use App\Models\LokasiPatroli;
 
@@ -43,12 +44,13 @@ class PatroliController extends Controller
             // Aktivitas Harian
             'aktivitasHarianPatroli.aktivitasHarian',
             // Anggota Patroli
-            'anggotaPatroli.anggota.kategoriAnggota',
+            // 'anggotaPatroli.anggota.kategoriAnggota',
             // Dokumentasi
             'dokumentasi',
 
             // lokasi patroli
-            'lokasiPatroli.desaKelurahan.kecamatan.kotakab.daops.provinsi',
+            'lokasiPatroli.kecamatan.kotaKab.daops.provinsi',
+            'lokasiPatroli.desaKelurahan',
             'lokasiPatroli.cuacaPagi',
             'lokasiPatroli.cuacaSiang',
             'lokasiPatroli.cuacaSore',
@@ -71,7 +73,7 @@ class PatroliController extends Controller
             // lokasi patroli udara
             'lokasiPatroli.patroliUdara'
             
-            ]);
+        ]);
 
         if (!empty($data['tanggal_patroli']))
             $patrolis->where('tanggal_patroli', $data['tanggal_patroli']);
@@ -422,8 +424,8 @@ class PatroliController extends Controller
         $daopsId = $filter['daops'];
 
         // Detail Daops
-        $daops = Daops::with([
-            'provinsi'
+        $daops = KotaKab::with([
+            'daops.kotaKab.provinsi'
         ])
         ->where('id', $daopsId)
         ->first()
@@ -585,6 +587,7 @@ class PatroliController extends Controller
     // = NULL
     {
         $lokasiPatroliFields = array(
+            'kecamatan_id',
             'desa_kelurahan_id',
             'cuaca_pagi_id',
             'cuaca_siang_id',
@@ -633,6 +636,7 @@ class PatroliController extends Controller
     {
         // Insert to lokasi patroli
         $lokasiPatroliFields = array(
+            'kecamatan_id',
             'desa_kelurahan_id',
             'cuaca_pagi_id',
             'cuaca_siang_id',

@@ -16,6 +16,11 @@ class KotaKab extends Model
 
     public function daops()
     {
-        return $this->belongsTo('App\Models\Daops');
+        return $this->hasMany('App\Models\Daops');
+    }
+
+    public function provinsi()
+    {
+        return $this->belongsTo('App\Models\Provinsi');
     }
 }
