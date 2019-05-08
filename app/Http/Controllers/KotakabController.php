@@ -7,18 +7,30 @@ use App\Models\KotaKab;
 
 class KotakabController extends Controller
 {
-    public function list($prov_id = null)
+    public function list(Request $request, $prov_id = null)
     {
+        $data = $request->all();
         if($prov_id) {
             $kotaKab = KotaKab::where('provinsi_id', $prov_id)->get();
             return response([
                 'data' => $kotaKab
             ]);
-        } else {
+        }
+
+        if($data['kab_id']) {
+            $kotaKab = KotaKab::with([
+                'kecamatan.desaKelurahan'
+            ])
+            ->where('id', $data['kab_id'])
+            ->get();
+            
             return response([
-                'data' => KotaKab::all()
+                'data' => $kotaKab
             ]);
         }
+        
+        $kotakab = KotaKab::get();
+
     }
 
     public function store(Request $request)

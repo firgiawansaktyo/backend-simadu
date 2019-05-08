@@ -21,6 +21,10 @@ class LokasiPatroli extends Model
         return $this->belongsTo('App\Models\KegiatanPatroli');
     }
 
+    public function kecamatan() {
+        return $this->belongsTo('App\Models\Kecamatan');
+    }
+
     public function desaKelurahan() {
         return $this->belongsTo('App\Models\DesaKelurahan');
     }
