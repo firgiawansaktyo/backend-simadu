@@ -915,7 +915,7 @@ class PatroliController extends Controller
     }
 
     private function image($imagename = null) {
-        $path = public_path().'/public/img/' . $imagename;
+        $path = public_path().'/img/'.$imagename;
         if(file_exists($path)) {
             return response()->download($path);
         }
