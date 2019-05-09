@@ -33,6 +33,13 @@ $app->get('role-user', 'EntrustRoleController@listRoleUser');
 
 $api = $app->make(Dingo\Api\Routing\Router::class);
 
+$api->get('/images/{imagename}', function($imagename = null) {
+    $path = storage_path().'/app/public/img/' . $imagename;
+    if(file_exists($path)) {
+        return response()->download($path);
+    }
+});
+
 $api->version('v1', function ($api) {
 
     // LOGIN
@@ -399,20 +406,6 @@ $api->version('v1', function ($api) {
             ,
             'middleware' => ['ability:anggota-daops-anggota-list']
         ]);
-
-        $api->get('/images/{imagename}', function($imagename = null) {
-            $path = storage_path().'/app/public/img/' . $imagename;
-            if(file_exists($path)) {
-                return response()->download($path);
-            }
-        });
-        // Route::get('images/{verein}/{sportler}/{image}', function($verein=null,$sportler=null,$image = null)
-        // {
-        //     $path = storage_path().'/app/public/'.$verein.'/sportler/'.$sportler.'/'.$image;
-        //     if (file_exists($path)) {
-        //         return Response::download($path);
-        //     }
-        // });
     });
     
 });
