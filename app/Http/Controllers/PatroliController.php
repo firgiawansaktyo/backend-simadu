@@ -913,4 +913,11 @@ class PatroliController extends Controller
             $lokasiPatroli->delete();
         }
     }
+
+    private function image($imagename = null) {
+        $path = public_path().'/public/img/' . $imagename;
+        if(file_exists($path)) {
+            return response()->download($path);
+        }
+    }
 }
