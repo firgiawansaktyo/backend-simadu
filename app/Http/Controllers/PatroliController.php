@@ -920,7 +920,7 @@ class PatroliController extends Controller
 
     public function image(Request $request) {
         $data = $request->all();
-        $path = base_path().'\\public\\img\\'. $data['image_name'];
+        $path = base_path().'\/public\/img\/'. $data['image_name'];
         $file = file_get_contents($path);
         return response($file)->header('Content-Type', 'image');
     }
