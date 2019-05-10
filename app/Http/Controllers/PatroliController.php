@@ -27,6 +27,10 @@ use Illuminate\Http\Response;
 use Intervention\Image\Facades\Image;
 use Log;
 
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+
+
 class PatroliController extends Controller
 {
     public function list(Request $request)
@@ -914,10 +918,10 @@ class PatroliController extends Controller
         }
     }
 
-    private function image($imagename = null) {
-        $path = public_path().'/img/'.$imagename;
-        if(file_exists($path)) {
-            return response()->download($path);
-        }
+    public function image(Request $request) {
+        $data = $request->all();
+        $path = base_path().'\\public\\img\\'. $data['image_name'];
+        $file = file_get_contents($path);
+        return response($file)->header('Content-Type', 'image');
     }
 }

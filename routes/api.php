@@ -54,7 +54,7 @@ $api->version('v1', function ($api) {
         $api->get('/kategori-patroli/list', 'KategoriPatroliController@list');
         // List patroli (can be filtered)
         $api->get('/patroli/list', 'PatroliController@list');
-        $api->get('/patroli/images/{imagename}', 'PatroliController@image');
+        $api->get('/patroli/images', 'PatroliController@image');
         // List kategori curah hujan
         $api->get('/curah-hujan/list', 'CurahHujanController@list');
         // List kategori cuaca
