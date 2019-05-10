@@ -48,7 +48,7 @@ class PatroliController extends Controller
             // Aktivitas Harian
             'aktivitasHarianPatroli.aktivitasHarian',
             // Anggota Patroli
-            // 'anggotaPatroli.anggota.kategoriAnggota',
+            'anggotaPatroli.anggota.kategoriAnggota',
             // Dokumentasi
             'dokumentasi',
 
