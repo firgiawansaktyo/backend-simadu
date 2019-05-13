@@ -53,7 +53,8 @@ class PatroliController extends Controller
             'dokumentasi',
 
             // lokasi patroli
-            'lokasiPatroli.kecamatan.kotaKab.daops.provinsi',
+            'lokasiPatroli.kecamatan.kotaKab.daops',
+            'lokasiPatroli.kecamatan.kotaKab.provinsi',
             'lokasiPatroli.desaKelurahan',
             'lokasiPatroli.cuacaPagi',
             'lokasiPatroli.cuacaSiang',
