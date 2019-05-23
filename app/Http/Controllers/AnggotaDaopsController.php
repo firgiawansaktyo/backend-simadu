@@ -16,9 +16,8 @@ class AnggotaDaopsController extends Controller
     public function list()
     {
         $anggota = Anggota::with([
-            'anggotaDaops.daops'
+            'anggotaDaops.daops.kotakab.provinsi'
         ])
-        ->has('anggotaDaops.daops')
         ->get();
 
         return response([
@@ -26,43 +25,20 @@ class AnggotaDaopsController extends Controller
         ]);
     }
 
-    public function anggotaList()
+    public function anggotaList(Request $request)
     {
-        $user = Auth::User();
-        $useremail = $user->email;
+        // getting ketua daops ID
+        $data = $request->all();
+        $ketua_id = $data['ketua_id'];
 
-        $angg = DB::table('anggota')
-            ->join('pengguna', 'anggota.email', '=', 'pengguna.email')
-            ->where('pengguna.email', '=', $useremail)
-            ->join('anggota_daops', 'anggota.id', '=', 'anggota_daops.anggota_id')
-            ->select('anggota.*', 'anggota_daops.*')
-            ->first();
-
-        $anggota = DB::table('anggota_daops')
-                     ->join('daops', 'daops.id', '=', 'anggota_daops.daops_id')
-                     ->join('anggota', 'anggota.id', '=', 'anggota_daops.anggota_id')
-                     ->where('daops_id', '=', $angg->daops_id)
-                     ->select('anggota_daops.*','daops.*','anggota.*','daops.nama')
-                     ->orderBy('daops_id')
-                     ->get();
-        // $anggotajoin = DB::table('pengguna') ->join('anggota', function($join)
-        // {
-        //     $join->on('pengguna.email', '=', 'anggota.email');
-        // })->get();
-
-        // $anggota = AnggotaDaops::where('anggota_id','=', $anggotajoin[0]->id)->get();
-        // $user = Auth::User();
-        // $useremail = $user->email;
-        // dd($useremail);
-        // $anggotadaops = Anggota::where('email', '=' , $user = Auth::User()->email);
-        // dd($anggotadaops);
-        // $anggota = $anggotadaops
-        // ->has('anggotaDaops.daops')
-        // $anggota = AnggotaDaops::where('anggota_id','=', $anggotadaops->id)
-        // ->get();
-
+        // getting anggota daops based on ketua daops id
+        $anggota_daops = Daops::where('ketua_id', '=', $ketua_id)
+            ->with([
+                'anggotaDaops.anggota.kategoriAnggota'
+            ])->first();
+        
         return response([
-            'anggota' => $anggota
+            'anggota' => $anggota_daops
         ]);
     }
 

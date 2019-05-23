@@ -59,4 +59,9 @@ class Pengguna extends Model implements
     {
         return $this->hasMany('App\Models\RoleUser');
     }
+
+    public function ketuaDaops() 
+    {
+        return $this->belongsTo('App\Models\Daops');
+    }
 }

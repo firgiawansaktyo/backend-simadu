@@ -11,8 +11,9 @@ class DesaKelurahanController extends Controller
     {
         if ($r->has('key'))
         {
+            // coba rubah nyesuain struktur di database
             $desas = DesaKelurahan::with([
-                'kecamatan.kotaKab.daops.provinsi'
+                'kecamatan.kotaKab.provinsi'
             ])
             ->where('nama', 'ilike', '%'.$r->input('key').'%')
             ->get();
@@ -23,7 +24,7 @@ class DesaKelurahanController extends Controller
         }
 
         $desas = DesaKelurahan::with([
-            'kecamatan.kotaKab.daops.provinsi'
+            'kecamatan.kotaKab.provinsi'
         ])
         ->get();
         

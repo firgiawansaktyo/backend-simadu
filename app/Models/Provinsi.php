@@ -9,8 +9,8 @@ class Provinsi extends Model
     protected $table = 'provinsi';
     protected $hidden = ['created_at', 'updated_at'];
 
-    public function daops()
+    public function kotaKab()
     {
-        return $this->hasMany('App\Models\Daops');
+        return $this->hasMany('App\Models\KotaKab');
     }
 }
