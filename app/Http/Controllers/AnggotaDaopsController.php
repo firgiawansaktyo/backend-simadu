@@ -25,17 +25,17 @@ class AnggotaDaopsController extends Controller
         ]);
     }
 
-    public function anggotaList()
+    public function anggotaList(Request $request)
     {
         // getting ketua daops ID
-        $ketua = Auth::User();
-        $ketua_id = $ketua->id;
+        $data = $request->all();
+        $ketua_id = $data['ketua_id'];
 
         // getting anggota daops based on ketua daops id
         $anggota_daops = Daops::where('ketua_id', '=', $ketua_id)
             ->with([
                 'anggotaDaops.anggota.kategoriAnggota'
-            ])->get();
+            ])->first();
         
         return response([
             'anggota' => $anggota_daops

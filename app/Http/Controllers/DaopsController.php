@@ -9,23 +9,39 @@ use App\Models\KotaKab;
 
 class DaopsController extends Controller
 {
-    public function list()
+    public function list(Request $request)
     {
-        // Ini buat apa?
-        // if ($r->has('key'))
-        // {
-        //     return response([
-        //         'data' => Daops::where('nama', 'ilike', '%'.$r->input('key').'%')->get()
-        //     ]);
-        // }
+        $data = $request->all();
 
+        // Kalau ada ketua_id yang ingin dicari
+        if($data['ketua_id']) {
+            $daopsDesa = Daops::where('ketua_id', '=', $data['ketua_id'])
+            ->with([
+                'kotaKab.kecamatan.desaKelurahan'
+            ])
+            ->first();
+
+            return response([
+                'data' => $daopsDesa
+            ]);
+        }
+
+        // Yang biasa aja
         $daops = Daops::with([
-            'kotaKab','pengguna'
+            'kotaKab.kecamatan.desaKelurahan',
+        ])
+        ->get();
+
+        $ketua_daops = Daops::with([
+            'pengguna',
         ])
         ->get();
 
         return response([
-            'data' => $daops
+            'data' => [
+                'daops' => $daops,
+                'ketua_daops' => $ketua_daops
+            ]
         ]);
     }
 

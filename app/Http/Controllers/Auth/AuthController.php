@@ -11,6 +11,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Http\Exception\HttpResponseException;
 
 use App\Models\Pengguna;
+use App\Models\Daops;
 
 class AuthController extends Controller
 {
@@ -99,16 +100,20 @@ class AuthController extends Controller
     protected function onAuthorized($token, $user)
     {
         $detailUser = Pengguna::with([
-            'roleUser.role.roleNavigationMenu.navigationMenu'
+            'roleUser.role.roleNavigationMenu.navigationMenu',
         ])
         ->where('id', $user->id)
-        ->get();
+        ->first();
+
+        $daops = Daops::where('ketua_id', $user->id)
+        ->first();
 
         return response([
             'message' => 'Login success',
             'data' => [
                 'token' => $token,
-                'user' => $detailUser
+                'user' => $detailUser,
+                'daops' => $daops
             ]
         ]);
     }
