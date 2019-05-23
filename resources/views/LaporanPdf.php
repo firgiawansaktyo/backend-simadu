@@ -23,7 +23,7 @@
 </head>
 <body>
   <div id="top-section">
-    <h2>LAPORAN KEGIATAN HARIAN PATROLI TERPADU & POSKO PENCEGAHAN KARHUTLA WILAYAH KERJA DAOPS <?=strtoupper($daops['nama'])?> PROVINSI <?=strtoupper($daops['provinsi']['nama'])?></h2>
+    <h2>LAPORAN KEGIATAN HARIAN PATROLI TERPADU & POSKO PENCEGAHAN KARHUTLA WILAYAH KERJA DAOPS <?=strtoupper($kotakab['nama'])?> PROVINSI <?=strtoupper($kotakab['provinsi']['nama'])?></h2>
     <h3>Tanggal: <?=$tanggal?></h3>
   </div>
 
@@ -137,9 +137,9 @@
               Ds. <?=ucwords($pd['desa_kelurahan']['nama'])?>
               Kec. <?=ucwords($pd['desa_kelurahan']['kecamatan']['nama'])?>
               Kab. <?=ucwords($pd['desa_kelurahan']['kecamatan']['kota_kab']['nama'])?>
-              Prov. <?=ucwords($pd['desa_kelurahan']['kecamatan']['kota_kab']['daops']['provinsi']['nama'])?>
+              Prov. <?=ucwords($pd['desa_kelurahan']['kecamatan']['kota_kab']['provinsi']['nama'])?>
             </td>
-
+          
             <!-- Koordinat -->
             <td>
               <?php
@@ -153,30 +153,32 @@
                 }
               ?>
             </td>
-
             <!-- Vegetasi -->
             <td>
               <?php
                 $vegs = [];
+                if (is_array($pd['patroli_darat']['kondisi_vegetasi']) || is_object($pd['patroli_darat']['kondisi_vegetasi'])){
                 foreach($pd['patroli_darat']['kondisi_vegetasi'] as $kv) {
                   array_push($vegs, ucwords($kv['vegetasi']['nama']));
                 }
                 $vegs = implode(',', $vegs);
                 echo $vegs;
+              }
               ?>
             </td>
-
             <!-- Jenis Tanah -->
             <td>
               <?php
                 $soils = [];
                 $gambutDeeps = [];
+                if (is_array($pd['patroli_darat']['kondisi_tanah']) || is_object($pd['patroli_darat']['kondisi_tanah'])){
                 foreach($pd['patroli_darat']['kondisi_tanah'] as $kt) {
                   array_push($soils, ucwords($kt['tanah']['nama']));
                   array_push($gambutDeeps, $kt['kedalaman_gambut']);
                 }
                 $soils = implode(',', $soils);
                 echo $soils;
+              }
               ?>
             </td>
 
@@ -193,12 +195,14 @@
               <?php
                 $waterSources = [];
                 $waterDeeps = [];
+                if (is_array($pd['patroli_darat']['kondisi_sumber_air']) || is_object($pd['patroli_darat']['kondisi_sumber_air'])){
                 foreach($pd['patroli_darat']['kondisi_sumber_air'] as $ksa) {
                   array_push($waterSources, ucwords($ksa['sumber_air']['name']));
                   array_push($waterDeeps, $ksa['kedalaman']);
                 }
                 $waterSources = implode(',', $waterSources);
                 echo $waterSources;
+              }
               ?>
             </td>
 
@@ -210,7 +214,7 @@
               ?>
             </td>
           </tr>
-          <?php endforeach ?>
+            <?php endforeach ?>
         <?php endforeach ?>
       </tbody>
     </table>
